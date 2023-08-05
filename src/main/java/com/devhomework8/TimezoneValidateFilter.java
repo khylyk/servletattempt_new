@@ -5,6 +5,9 @@ import javax.servlet.http.HttpFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Set;
 import java.util.TimeZone;
 
 @WebFilter(value = "/time")
@@ -16,12 +19,14 @@ public class TimezoneValidateFilter extends HttpFilter {
 
         String timezoneParam = req.getParameter("timezone");
 
+
+
         if (timezoneParam != null && !timezoneParam.isEmpty()) {
             String decodedTimezone = java.net.URLDecoder.decode(timezoneParam, "UTF-8");
 
-            if (!isValidTimezone(decodedTimezone)) {
+            if (!isValidTimezone(timezoneParam)) {
                 resp.setContentType("text/html; charset=utf-8");
-                resp.getWriter().write("Invalid timezone");
+                resp.getWriter().write("Invalid timezone " + timezoneParam);
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.getWriter().close();
                 return;
@@ -32,16 +37,41 @@ public class TimezoneValidateFilter extends HttpFilter {
     }
 
     private boolean isValidTimezone(String timezone) {
-        String[] availableTimezones = TimeZone.getAvailableIDs();
-        return TimeZone.getTimeZone(timezone) != null && containsIgnoreCase(availableTimezones, timezone);
+        ArrayList<String> availableTimezones = new ArrayList<>();
+        availableTimezones.add("UTC+2");
+        availableTimezones.add("UTC+3");
+        availableTimezones.add("UTC+4");
+        availableTimezones.add("UTC+5");
+        availableTimezones.add("UTC+6");
+        availableTimezones.add("UTC+7");
+        availableTimezones.add("UTC+8");
+        availableTimezones.add("UTC+9");
+        availableTimezones.add("UTC+10");
+        availableTimezones.add("UTC+11");
+        availableTimezones.add("UTC+12");
+        availableTimezones.add("UTC+13");
+        availableTimezones.add("UTC+14");
+        availableTimezones.add("UTC-2");
+        availableTimezones.add("UTC-3");
+        availableTimezones.add("UTC-4");
+        availableTimezones.add("UTC-5");
+        availableTimezones.add("UTC-6");
+        availableTimezones.add("UTC-7");
+        availableTimezones.add("UTC-8");
+        availableTimezones.add("UTC-9");
+        availableTimezones.add("UTC-10");
+        availableTimezones.add("UTC-11");
+        availableTimezones.add("UTC-12");
+        return availableTimezones.contains(timezone);
     }
 
-    private boolean containsIgnoreCase(String[] array, String value) {
-        for (String str : array) {
-            if (str.equalsIgnoreCase(value)) {
-                return true;
-            }
-        }
-        return false;
-    }
+
+//    private boolean containsIgnoreCase(String[] array, String value) {
+//        for (String str : array) {
+//            if (str.equalsIgnoreCase(value)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 }
